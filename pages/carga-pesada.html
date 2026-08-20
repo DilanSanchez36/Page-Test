@@ -51,9 +51,11 @@
   <div class="panel">
     <h2>Imágenes (24, carga progresiva)</h2>
     <p class="helper-text">
-      Cada casilla arranca como un <em>skeleton</em> animado (sin imagen todavía, "carga parcial") y cambia a
-      la imagen real al terminar de decodificar (<code>[data-testid="heavy-image-N"]</code>,
-      <code>data-loaded="true|false"</code>).
+      Objetos reales y reconocibles (perro, gato, celular, laptop, cámara, auto, taza, bicicleta, casa, árbol,
+      reloj, libro), útiles para pruebas de reconocimiento visual. Cada casilla arranca como un <em>skeleton</em>
+      animado (sin imagen todavía, "carga parcial") y cambia a la imagen real al terminar de decodificar
+      (<code>[data-testid="heavy-image-N"]</code>, <code>data-loaded="true|false"</code>,
+      <code>data-object="&lt;nombre-del-objeto&gt;"</code>).
     </p>
     <span class="status status--pending" id="image-status" data-testid="image-status" data-state="pending">
       <span id="image-status-text">Cargando… 0 / 24</span>
@@ -130,16 +132,21 @@
   }
 
   // ---------- Imágenes con carga progresiva ----------
+  // Mismo orden de objetos que usa el generador de assets/images/heavy/*.svg
+  const OBJECT_LABELS = ['Perro', 'Gato', 'Celular', 'Laptop', 'Cámara', 'Auto', 'Taza', 'Bicicleta', 'Casa', 'Árbol', 'Reloj', 'Libro'];
+
   function buildImageTiles() {
     for (let i = 0; i < TOTAL_IMAGES; i++) {
       const n = i + 1;
+      const objectLabel = OBJECT_LABELS[i % OBJECT_LABELS.length];
       const tile = document.createElement('div');
       tile.className = 'image-tile';
       tile.setAttribute('data-testid', 'heavy-image-tile-' + n);
 
       const img = document.createElement('img');
-      img.alt = 'Imagen de prueba ' + n;
+      img.alt = objectLabel;
       img.setAttribute('data-testid', 'heavy-image-' + n);
+      img.setAttribute('data-object', objectLabel.toLowerCase());
       img.setAttribute('data-loaded', 'false');
       img.dataset.src = '../assets/images/heavy/photo-' + String(n).padStart(2, '0') + '.svg';
 

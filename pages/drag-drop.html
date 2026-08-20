@@ -20,14 +20,14 @@
   <div class="panel">
     <h2>Elementos arrastrables</h2>
     <div class="draggable-row" id="draggable-row" data-testid="draggable-row">
-      <div class="draggable-item" draggable="true" data-value="rojo" data-testid="drag-item-rojo">
-        <img class="avatar-thumb" src="../assets/images/avatar/avatar-01.svg" alt="Usuario rojo" /> Rojo
+      <div class="draggable-item" draggable="true" data-value="perro" data-testid="drag-item-perro">
+        <img class="avatar-thumb" src="../assets/images/avatar/avatar-01.svg" alt="Perro" /> Perro
       </div>
-      <div class="draggable-item" draggable="true" data-value="verde" data-testid="drag-item-verde">
-        <img class="avatar-thumb" src="../assets/images/avatar/avatar-02.svg" alt="Usuario verde" /> Verde
+      <div class="draggable-item" draggable="true" data-value="gato" data-testid="drag-item-gato">
+        <img class="avatar-thumb" src="../assets/images/avatar/avatar-02.svg" alt="Gato" /> Gato
       </div>
-      <div class="draggable-item" draggable="true" data-value="azul" data-testid="drag-item-azul">
-        <img class="avatar-thumb" src="../assets/images/avatar/avatar-03.svg" alt="Usuario azul" /> Azul
+      <div class="draggable-item" draggable="true" data-value="celular" data-testid="drag-item-celular">
+        <img class="avatar-thumb" src="../assets/images/avatar/avatar-03.svg" alt="Celular" /> Celular
       </div>
     </div>
   </div>
@@ -36,11 +36,11 @@
     <h2>Zonas de destino</h2>
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
       <div>
-        <p class="helper-text">Zona A (acepta cualquier color)</p>
+        <p class="helper-text">Zona A (acepta cualquier objeto)</p>
         <div class="drop-target" id="zone-a" data-testid="drop-zone-a"></div>
       </div>
       <div>
-        <p class="helper-text">Zona B (solo acepta 🔵 Azul)</p>
+        <p class="helper-text">Zona B (solo acepta 📱 Celular)</p>
         <div class="drop-target" id="zone-b" data-testid="drop-zone-b"></div>
       </div>
     </div>
@@ -95,7 +95,7 @@
   }
 
   setupZone(zoneA);
-  setupZone(zoneB, { onlyValue: 'azul' });
+  setupZone(zoneB, { onlyValue: 'celular' });
 </script>
 
 </body>

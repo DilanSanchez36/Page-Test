@@ -1,11 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
-  <defs>
-    <linearGradient id="ag5" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ff4d94" />
-      <stop offset="100%" stop-color="#ff9f4d" />
-    </linearGradient>
-  </defs>
-  <circle cx="60" cy="60" r="60" fill="url(#ag5)" />
-  <text x="50%" y="54%" font-family="sans-serif" font-size="34" font-weight="700"
-    fill="rgba(255,255,255,0.92)" text-anchor="middle" dominant-baseline="middle">U6</text>
+  <circle cx="60" cy="60" r="60" fill="#2a1512" />
+  <g transform="translate(60, 62.400000000000006) scale(0.7)">
+    
+      <rect x="-42" y="0" width="84" height="24" rx="10" fill="#e0503a"/>
+      <path d="M -22 0 Q -18 -20 0 -20 Q 18 -20 22 0 Z" fill="#e0503a"/>
+      <polygon points="-17,-2 17,-2 12,-16 -12,-16" fill="#1b2330"/>
+      <circle cx="-23" cy="24" r="10" fill="#16181d"/>
+      <circle cx="23" cy="24" r="10" fill="#16181d"/>
+      <circle cx="-23" cy="24" r="4" fill="#9aa4b5"/>
+      <circle cx="23" cy="24" r="4" fill="#9aa4b5"/>
+  </g>
 </svg>

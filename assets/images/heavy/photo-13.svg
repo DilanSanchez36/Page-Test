@@ -1,18 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
-  <defs>
-    <linearGradient id="g12" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#35c98f" />
-      <stop offset="100%" stop-color="#3fd7c4" />
-    </linearGradient>
-    <filter id="noise12" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.0061" numOctaves="3" seed="472" result="noise" />
-      <feColorMatrix in="noise" type="matrix"
-        values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0" />
-      <feComposite operator="over" in2="SourceGraphic" />
-    </filter>
-  </defs>
-  <rect width="800" height="500" fill="url(#g12)" />
-  <circle cx="733" cy="464" r="34" fill="#f5b942" opacity="0.18" /><circle cx="322" cy="176" r="100" fill="#7c4dff" opacity="0.18" /><circle cx="727" cy="313" r="69" fill="#ff4d94" opacity="0.18" /><circle cx="599" cy="25" r="41" fill="#4dd2c0" opacity="0.18" />
-  <rect width="800" height="500" filter="url(#noise12)" opacity="0.5" />
-  <text x="16" y="484" font-family="sans-serif" font-size="14" fill="rgba(255,255,255,0.65)">foto-13 · 800x500</text>
+  <rect width="800" height="500" fill="#2a2118" />
+  <g transform="translate(400, 210) scale(2.500)">
+    
+      <ellipse cx="-28" cy="-8" rx="13" ry="20" fill="#b97a45" transform="rotate(-18 -28 -8)"/>
+      <ellipse cx="28" cy="-8" rx="13" ry="20" fill="#b97a45" transform="rotate(18 28 -8)"/>
+      <ellipse cx="0" cy="2" rx="34" ry="30" fill="#d9a066"/>
+      <ellipse cx="0" cy="18" rx="17" ry="13" fill="#f2d9b8"/>
+      <circle cx="-13" cy="-4" r="4.5" fill="#2a2019"/>
+      <circle cx="13" cy="-4" r="4.5" fill="#2a2019"/>
+      <ellipse cx="0" cy="15" rx="6" ry="4.5" fill="#3b2a20"/>
+      <path d="M 0 19 Q -6 26 -12 22" stroke="#3b2a20" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M 0 19 Q 6 26 12 22" stroke="#3b2a20" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="400" y="472.22222222222223" font-family="sans-serif" font-size="27.77777777777778"
+    font-weight="700" fill="rgba(255,255,255,0.92)" text-anchor="middle">Perro</text>
+  <text x="16" y="486" font-family="sans-serif" font-size="11.11111111111111"
+    fill="rgba(255,255,255,0.4)">perro-13 · 800x500</text>
 </svg>

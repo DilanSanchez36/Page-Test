@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
-  <defs>
-    <linearGradient id="ag3" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f5b942" />
-      <stop offset="100%" stop-color="#ff7a59" />
-    </linearGradient>
-  </defs>
-  <circle cx="60" cy="60" r="60" fill="url(#ag3)" />
-  <text x="50%" y="54%" font-family="sans-serif" font-size="34" font-weight="700"
-    fill="rgba(255,255,255,0.92)" text-anchor="middle" dominant-baseline="middle">U4</text>
+  <circle cx="60" cy="60" r="60" fill="#141a24" />
+  <g transform="translate(60, 62.400000000000006) scale(0.7)">
+    
+      <rect x="-36" y="-32" width="72" height="46" rx="4" fill="#cfd6e0"/>
+      <rect x="-31" y="-27" width="62" height="36" rx="2" fill="#16202e"/>
+      <rect x="-16" y="-13" width="32" height="3" fill="#4d7bff" opacity="0.8"/>
+      <polygon points="-44,14 44,14 52,26 -52,26" fill="#cfd6e0"/>
+      <rect x="-8" y="14" width="16" height="3" fill="#9aa4b5"/>
+  </g>
 </svg>

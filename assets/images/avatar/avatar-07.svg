@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
-  <defs>
-    <linearGradient id="ag6" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#4dd2c0" />
-      <stop offset="100%" stop-color="#4d7bff" />
-    </linearGradient>
-  </defs>
-  <circle cx="60" cy="60" r="60" fill="url(#ag6)" />
-  <text x="50%" y="54%" font-family="sans-serif" font-size="34" font-weight="700"
-    fill="rgba(255,255,255,0.92)" text-anchor="middle" dominant-baseline="middle">U7</text>
+  <circle cx="60" cy="60" r="60" fill="#201a14" />
+  <g transform="translate(60, 62.400000000000006) scale(0.7)">
+    
+      <rect x="-18" y="-8" width="36" height="34" rx="4" fill="#f5f2ec"/>
+      <ellipse cx="0" cy="-8" rx="18" ry="5" fill="#6b4226"/>
+      <path d="M 18 -2 a 11 11 0 0 1 0 20" stroke="#f5f2ec" stroke-width="5" fill="none"/>
+      <path d="M -6 -18 q 3 -6 0 -12" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <path d="M 4 -18 q 3 -6 0 -12" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+  </g>
 </svg>

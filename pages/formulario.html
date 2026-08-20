@@ -20,8 +20,8 @@
   <form id="main-form" data-testid="main-form">
 
     <div class="panel">
-      <h2>Foto de perfil</h2>
-      <p class="helper-text">Elige un avatar con un clic. Son imágenes reales (<code>&lt;img&gt;</code>), útiles para que el robot valide selección visual y estado <code>selected</code>.</p>
+      <h2>Ícono de perfil</h2>
+      <p class="helper-text">Elige un ícono con un clic. Son objetos reales y reconocibles (perro, gato, celular, laptop…) — imágenes reales (<code>&lt;img&gt;</code>), útiles para que el robot valide selección visual y estado <code>selected</code>.</p>
       <div class="avatar-pick-grid" id="avatar-pick-grid" data-testid="avatar-pick-grid"></div>
       <input type="hidden" id="avatar-value" name="avatar" data-testid="input-avatar-value" />
     </div>
@@ -162,23 +162,26 @@
 </main>
 
 <script>
-  // Selector de avatar (imágenes reales)
+  // Selector de ícono (imágenes reales de objetos reconocibles)
+  const AVATAR_OBJECTS = ['perro', 'gato', 'celular', 'laptop', 'camara', 'auto', 'taza', 'bicicleta', 'casa', 'arbol'];
+  const AVATAR_LABELS = ['Perro', 'Gato', 'Celular', 'Laptop', 'Cámara', 'Auto', 'Taza', 'Bicicleta', 'Casa', 'Árbol'];
   const avatarGrid = document.getElementById('avatar-pick-grid');
   const avatarValue = document.getElementById('avatar-value');
-  for (let i = 1; i <= 10; i++) {
-    const n = String(i).padStart(2, '0');
+  AVATAR_OBJECTS.forEach((key, idx) => {
+    const n = String(idx + 1).padStart(2, '0');
+    const label = AVATAR_LABELS[idx];
     const wrap = document.createElement('div');
     wrap.className = 'avatar-pick';
-    wrap.setAttribute('data-testid', 'avatar-option-' + n);
-    wrap.setAttribute('data-value', 'avatar-' + n);
-    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.svg" alt="Avatar ' + n + '" />';
+    wrap.setAttribute('data-testid', 'avatar-option-' + key);
+    wrap.setAttribute('data-value', key);
+    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.svg" alt="' + label + '" />';
     wrap.addEventListener('click', () => {
       avatarGrid.querySelectorAll('.avatar-pick').forEach(el => el.classList.remove('selected'));
       wrap.classList.add('selected');
       avatarValue.value = wrap.getAttribute('data-value');
     });
     avatarGrid.appendChild(wrap);
-  }
+  });
 
   // Dropdown personalizado
   const rolToggle = document.getElementById('rol-toggle');
@@ -248,7 +251,7 @@
 
     summaryEl.innerHTML = '';
     const items = {
-      Avatar: avatarValue.value || '—',
+      Ícono: avatarValue.value || '—',
       Nombre: nombre,
       Email: email,
       País: pais,
