@@ -36,6 +36,34 @@ body {
   padding: 32px 20px 80px;
 }
 
+.container--wide {
+  max-width: 1500px;
+}
+
+.load-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.load-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.load-col .panel {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .load-page-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 header.page-header {
   padding: 40px 20px 24px;
   text-align: center;
@@ -606,6 +634,11 @@ code {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
   margin-top: 16px;
+}
+
+.image-grid--compact {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
 }
 
 .image-tile {

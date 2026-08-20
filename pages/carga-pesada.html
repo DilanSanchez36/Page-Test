@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Carga pesada — Page Test</title>
-<link rel="stylesheet" href="../css/style.css?v=5" />
+<link rel="stylesheet" href="../css/style.css?v=6" />
 </head>
 <body>
 
@@ -14,29 +14,51 @@
   <p>Esta página inyecta 1500 elementos de texto en lotes y 24 imágenes de carga progresiva (lo que más suele demorar el render real), y expone un panel de métricas estilo devtools para medir cada etapa.</p>
 </header>
 
-<main class="container">
+<main class="container container--wide">
   <a class="back-link" href="../index.html">← Volver al inicio</a>
 
-  <div class="panel">
-    <h2>Estado general</h2>
-    <p class="helper-text">
-      Marcador combinado para el robot: <code>[data-testid="load-status"]</code>.
-      Su atributo <code>data-state</code> vale <code>pending</code> hasta que <strong>tanto el texto como las imágenes</strong> terminan de cargar, y pasa a <code>done</code> recién entonces.
-    </p>
-    <span class="status status--pending" id="load-status" data-testid="load-status" data-state="pending">
-      <span id="load-status-text">Cargando…</span>
-    </span>
-    <button class="btn secondary" id="restart-btn" data-testid="restart-load" style="margin-left:12px;">Reiniciar carga</button>
-  </div>
+  <div class="load-page-grid">
+    <div class="load-col">
+      <div class="panel">
+        <h2>Estado general</h2>
+        <p class="helper-text">
+          Marcador combinado para el robot: <code>[data-testid="load-status"]</code>.
+          Su atributo <code>data-state</code> vale <code>pending</code> hasta que <strong>tanto el texto como las imágenes</strong> terminan de cargar, y pasa a <code>done</code> recién entonces.
+        </p>
+        <span class="status status--pending" id="load-status" data-testid="load-status" data-state="pending">
+          <span id="load-status-text">Cargando…</span>
+        </span>
+        <button class="btn secondary" id="restart-btn" data-testid="restart-load" style="margin-left:12px;">Reiniciar carga</button>
+      </div>
 
-  <div class="panel">
-    <h2>Panel de tiempos (estilo devtools)</h2>
-    <p class="helper-text">
-      Cada fila usa <code>Performance API</code> (hitos nativos del navegador) o <code>performance.mark()</code>
-      (hitos propios de esta página). El valor en <code>ms</code> también está en el atributo
-      <code>data-ms</code> de cada fila (<code>[data-testid="metric-&lt;clave&gt;"]</code>) para que el robot lo lea directamente.
-    </p>
-    <div class="metrics-table" id="metrics-table" data-testid="metrics-table"></div>
+      <div class="panel">
+        <h2>Panel de tiempos (estilo devtools)</h2>
+        <p class="helper-text">
+          Cada fila usa <code>Performance API</code> (hitos nativos del navegador) o <code>performance.mark()</code>
+          (hitos propios de esta página). El valor en <code>ms</code> también está en el atributo
+          <code>data-ms</code> de cada fila (<code>[data-testid="metric-&lt;clave&gt;"]</code>) para que el robot lo lea directamente.
+        </p>
+        <div class="metrics-table" id="metrics-table" data-testid="metrics-table"></div>
+      </div>
+    </div>
+
+    <div class="load-col">
+      <div class="panel">
+        <h2>Imágenes (24, carga progresiva)</h2>
+        <p class="helper-text">
+          Objetos reales y reconocibles (perro, gato, celular, laptop, cámara, auto, taza, bicicleta, casa, árbol,
+          reloj, libro), útiles para pruebas de reconocimiento visual. Cada casilla arranca como un <em>skeleton</em>
+          animado (sin imagen todavía, "carga parcial") y cambia a la imagen real al terminar de decodificar
+          (<code>[data-testid="heavy-image-N"]</code>, <code>data-loaded="true|false"</code>,
+          <code>data-object="&lt;nombre-del-objeto&gt;"</code>).
+        </p>
+        <span class="status status--pending" id="image-status" data-testid="image-status" data-state="pending">
+          <span id="image-status-text">Cargando… 0 / 24</span>
+        </span>
+        <div class="progress-bar"><div id="image-progress-fill" data-testid="image-progress-fill"></div></div>
+        <div class="image-grid image-grid--compact" id="image-grid" data-testid="image-grid"></div>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
@@ -46,22 +68,6 @@
     </span>
     <div class="progress-bar"><div id="progress-fill" data-testid="progress-fill"></div></div>
     <div class="item-list" id="item-list" data-testid="item-list"></div>
-  </div>
-
-  <div class="panel">
-    <h2>Imágenes (24, carga progresiva)</h2>
-    <p class="helper-text">
-      Objetos reales y reconocibles (perro, gato, celular, laptop, cámara, auto, taza, bicicleta, casa, árbol,
-      reloj, libro), útiles para pruebas de reconocimiento visual. Cada casilla arranca como un <em>skeleton</em>
-      animado (sin imagen todavía, "carga parcial") y cambia a la imagen real al terminar de decodificar
-      (<code>[data-testid="heavy-image-N"]</code>, <code>data-loaded="true|false"</code>,
-      <code>data-object="&lt;nombre-del-objeto&gt;"</code>).
-    </p>
-    <span class="status status--pending" id="image-status" data-testid="image-status" data-state="pending">
-      <span id="image-status-text">Cargando… 0 / 24</span>
-    </span>
-    <div class="progress-bar"><div id="image-progress-fill" data-testid="image-progress-fill"></div></div>
-    <div class="image-grid" id="image-grid" data-testid="image-grid"></div>
   </div>
 </main>
 
