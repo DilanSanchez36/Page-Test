@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Carga pesada — Page Test</title>
-<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/style.css?v=3" />
 </head>
 <body>
 
@@ -232,7 +232,9 @@
 
   function refreshMetrics() {
     const rows = buildMetricRows();
-    const maxValue = Math.max(1, ...rows.map(r => r.value || 0));
+    // Escala logarítmica: los hitos van desde ~10ms hasta miles de ms,
+    // una barra lineal deja casi todas las filas invisibles.
+    const maxLog = Math.log10(Math.max(1, ...rows.map(r => r.value || 0)) + 1) || 1;
 
     metricsTable.innerHTML = '';
     rows.forEach(row => {
@@ -243,11 +245,14 @@
         el.setAttribute('data-ms', Math.round(row.value));
       }
 
-      const pct = row.value !== null ? Math.min(100, (row.value / maxValue) * 100) : 0;
+      let pct = 0;
+      if (row.value !== null) {
+        pct = Math.max(4, Math.min(100, (Math.log10(row.value + 1) / maxLog) * 100));
+      }
 
       el.innerHTML =
         '<span class="metric-label">' + row.label + '</span>' +
-        '<span class="metric-bar-track"><span class="metric-bar-fill" style="width:' + pct + '%"></span></span>' +
+        '<span class="metric-bar-track"><span class="metric-bar-fill" style="width:' + pct.toFixed(1) + '%"></span></span>' +
         '<span class="metric-value">' + (row.value !== null ? Math.round(row.value) + ' ms' : '—') + '</span>' +
         '<span class="metric-flag">' + (row.value !== null ? '✅' : '⏳') + '</span>';
 
