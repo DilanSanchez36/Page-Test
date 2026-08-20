@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tabla dinámica — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Tablas</span>
+  <h1>Tabla dinámica</h1>
+  <p>Datos generados en el cliente con orden por columna, filtro de texto y paginación.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <div class="panel">
+    <div class="table-toolbar">
+      <input type="text" id="filter-input" data-testid="table-filter" placeholder="Filtrar por nombre o rol…" />
+      <span class="helper-text" id="result-count" data-testid="table-result-count"></span>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="data-table" data-testid="data-table">
+        <thead>
+          <tr>
+            <th data-key="id" data-testid="th-id">ID <span class="arrow"></span></th>
+            <th data-key="nombre" data-testid="th-nombre">Nombre <span class="arrow"></span></th>
+            <th data-key="rol" data-testid="th-rol">Rol <span class="arrow"></span></th>
+            <th data-key="pais" data-testid="th-pais">País <span class="arrow"></span></th>
+            <th data-key="puntaje" data-testid="th-puntaje">Puntaje <span class="arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="table-body" data-testid="table-body"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination" data-testid="pagination">
+      <button class="btn secondary" id="prev-page" data-testid="prev-page">← Anterior</button>
+      <span id="page-info" data-testid="page-info"></span>
+      <button class="btn secondary" id="next-page" data-testid="next-page">Siguiente →</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  const NOMBRES = ['Ana', 'Bruno', 'Carla', 'Diego', 'Elena', 'Fabián', 'Gina', 'Hugo', 'Iris', 'Jorge'];
+  const ROLES = ['Desarrollador/a', 'QA Engineer', 'Product Manager', 'Diseñador/a'];
+  const PAISES = ['Chile', 'Argentina', 'México', 'Colombia', 'España'];
+
+  const data = [];
+  for (let i = 1; i <= 87; i++) {
+    data.push({
+      id: i,
+      nombre: NOMBRES[i % NOMBRES.length] + ' ' + String.fromCharCode(65 + (i % 26)) + '.',
+      rol: ROLES[i % ROLES.length],
+      pais: PAISES[i % PAISES.length],
+      puntaje: ((i * 37) % 100) + 1
+    });
+  }
+
+  const PAGE_SIZE = 10;
+  let sortKey = 'id';
+  let sortDir = 1;
+  let page = 1;
+
+  const tbody = document.getElementById('table-body');
+  const filterInput = document.getElementById('filter-input');
+  const resultCount = document.getElementById('result-count');
+  const pageInfo = document.getElementById('page-info');
+  const prevBtn = document.getElementById('prev-page');
+  const nextBtn = document.getElementById('next-page');
+
+  function getFiltered() {
+    const q = filterInput.value.trim().toLowerCase();
+    let rows = data.filter(r => !q || r.nombre.toLowerCase().includes(q) || r.rol.toLowerCase().includes(q));
+    rows = rows.slice().sort((a, b) => {
+      const va = a[sortKey], vb = b[sortKey];
+      if (va < vb) return -1 * sortDir;
+      if (va > vb) return 1 * sortDir;
+      return 0;
+    });
+    return rows;
+  }
+
+  function render() {
+    const filtered = getFiltered();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    page = Math.min(page, totalPages);
+    const start = (page - 1) * PAGE_SIZE;
+    const pageRows = filtered.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = '';
+    pageRows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-testid', 'table-row-' + row.id);
+      tr.innerHTML =
+        '<td data-testid="cell-id-' + row.id + '">' + row.id + '</td>' +
+        '<td data-testid="cell-nombre-' + row.id + '">' + row.nombre + '</td>' +
+        '<td data-testid="cell-rol-' + row.id + '">' + row.rol + '</td>' +
+        '<td data-testid="cell-pais-' + row.id + '">' + row.pais + '</td>' +
+        '<td data-testid="cell-puntaje-' + row.id + '">' + row.puntaje + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    resultCount.textContent = filtered.length + ' resultado(s)';
+    pageInfo.textContent = 'Página ' + page + ' de ' + totalPages;
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= totalPages;
+
+    document.querySelectorAll('th[data-key]').forEach(th => {
+      const arrow = th.querySelector('.arrow');
+      arrow.textContent = th.getAttribute('data-key') === sortKey ? (sortDir === 1 ? '▲' : '▼') : '';
+    });
+  }
+
+  document.querySelectorAll('th[data-key]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.getAttribute('data-key');
+      if (sortKey === key) {
+        sortDir *= -1;
+      } else {
+        sortKey = key;
+        sortDir = 1;
+      }
+      render();
+    });
+  });
+
+  filterInput.addEventListener('input', () => { page = 1; render(); });
+  prevBtn.addEventListener('click', () => { page--; render(); });
+  nextBtn.addEventListener('click', () => { page++; render(); });
+
+  render();
+</script>
+
+</body>
+</html>

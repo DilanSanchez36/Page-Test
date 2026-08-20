@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Subida de archivos — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Archivos</span>
+  <h1>Subida de archivos</h1>
+  <p>Input de archivo clásico y una zona de arrastre de archivos. Todo se procesa localmente en el navegador, sin enviarse a ningún servidor.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <div class="panel">
+    <h2>Input de archivo</h2>
+    <div class="field">
+      <label for="file-input">Selecciona uno o varios archivos</label>
+      <input type="file" id="file-input" data-testid="file-input" multiple />
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Zona de arrastre</h2>
+    <div class="dropzone" id="file-dropzone" data-testid="file-dropzone">
+      Arrastra archivos aquí, o haz clic para seleccionarlos
+      <input type="file" id="dropzone-input" data-testid="dropzone-file-input" multiple style="display:none;" />
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Archivos cargados</h2>
+    <ul class="file-list" id="file-list" data-testid="file-list"></ul>
+    <p class="helper-text" id="file-list-empty" data-testid="file-list-empty">Ningún archivo cargado todavía.</p>
+  </div>
+</main>
+
+<script>
+  const fileInput = document.getElementById('file-input');
+  const dropzone = document.getElementById('file-dropzone');
+  const dropzoneInput = document.getElementById('dropzone-input');
+  const fileList = document.getElementById('file-list');
+  const emptyMsg = document.getElementById('file-list-empty');
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function renderFiles(fileArray) {
+    fileList.innerHTML = '';
+    if (!fileArray.length) {
+      emptyMsg.style.display = 'block';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+    fileArray.forEach((file, i) => {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'file-item-' + i);
+      li.innerHTML = '<span>' + file.name + '</span><span>' + formatSize(file.size) + '</span>';
+      fileList.appendChild(li);
+    });
+  }
+
+  fileInput.addEventListener('change', () => renderFiles(Array.from(fileInput.files)));
+  dropzoneInput.addEventListener('change', () => renderFiles(Array.from(dropzoneInput.files)));
+
+  dropzone.addEventListener('click', () => dropzoneInput.click());
+
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+      renderFiles(Array.from(e.dataTransfer.files));
+    }
+  });
+</script>
+
+</body>
+</html>

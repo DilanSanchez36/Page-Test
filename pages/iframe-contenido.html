@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contenido del iframe</title>
+<link rel="stylesheet" href="../css/style.css" />
+<style>
+  body { padding: 16px; background: var(--surface-alt); }
+</style>
+</head>
+<body>
+
+<div class="field">
+  <label for="iframe-comentario">Comentario (dentro del iframe)</label>
+  <input type="text" id="iframe-comentario" data-testid="iframe-input-comentario" placeholder="Escribe algo aquí" />
+</div>
+
+<div class="checkbox-row">
+  <input type="checkbox" id="iframe-acepto" data-testid="iframe-checkbox-acepto" />
+  <label for="iframe-acepto" style="margin:0;">Acepto los términos (dentro del iframe)</label>
+</div>
+
+<button class="btn" id="iframe-btn" data-testid="iframe-submit">Confirmar dentro del iframe</button>
+
+<p id="iframe-status" data-testid="iframe-status" style="margin-top:14px; color: var(--muted);">Sin confirmar todavía.</p>
+
+<script>
+  document.getElementById('iframe-btn').addEventListener('click', () => {
+    const comentario = document.getElementById('iframe-comentario').value.trim();
+    const acepto = document.getElementById('iframe-acepto').checked;
+    const status = document.getElementById('iframe-status');
+    if (!comentario || !acepto) {
+      status.textContent = 'Falta completar el comentario o aceptar los términos.';
+      status.style.color = 'var(--danger)';
+      return;
+    }
+    status.textContent = 'Confirmado dentro del iframe: "' + comentario + '"';
+    status.style.color = 'var(--success)';
+  });
+</script>
+
+</body>
+</html>

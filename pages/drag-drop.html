@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Drag & Drop — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Arrastrar y soltar</span>
+  <h1>Drag &amp; Drop</h1>
+  <p>Arrastra los elementos de la fila superior hasta alguna de las zonas de destino, usando la API nativa de HTML5 Drag and Drop.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <div class="panel">
+    <h2>Elementos arrastrables</h2>
+    <div class="draggable-row" id="draggable-row" data-testid="draggable-row">
+      <div class="draggable-item" draggable="true" data-value="rojo" data-testid="drag-item-rojo">🔴 Rojo</div>
+      <div class="draggable-item" draggable="true" data-value="verde" data-testid="drag-item-verde">🟢 Verde</div>
+      <div class="draggable-item" draggable="true" data-value="azul" data-testid="drag-item-azul">🔵 Azul</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Zonas de destino</h2>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
+      <div>
+        <p class="helper-text">Zona A (acepta cualquier color)</p>
+        <div class="drop-target" id="zone-a" data-testid="drop-zone-a"></div>
+      </div>
+      <div>
+        <p class="helper-text">Zona B (solo acepta 🔵 Azul)</p>
+        <div class="drop-target" id="zone-b" data-testid="drop-zone-b"></div>
+      </div>
+    </div>
+    <span class="status status--idle" id="drop-status" data-testid="drop-status" style="margin-top:16px;">
+      <span id="drop-status-text">Nada soltado todavía.</span>
+    </span>
+  </div>
+</main>
+
+<script>
+  const items = document.querySelectorAll('.draggable-item');
+  const zoneA = document.getElementById('zone-a');
+  const zoneB = document.getElementById('zone-b');
+  const statusEl = document.getElementById('drop-status');
+  const statusText = document.getElementById('drop-status-text');
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', item.getAttribute('data-value'));
+      item.classList.add('dragging');
+    });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+  });
+
+  function setupZone(zone, { onlyValue } = {}) {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('dragover');
+    });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      const value = e.dataTransfer.getData('text/plain');
+
+      if (onlyValue && value !== onlyValue) {
+        statusEl.className = 'status status--pending';
+        statusText.textContent = 'Esa zona solo acepta "' + onlyValue + '". Intentaste soltar "' + value + '".';
+        return;
+      }
+
+      const dropped = document.createElement('div');
+      dropped.className = 'draggable-item';
+      dropped.setAttribute('data-testid', 'dropped-' + value + '-' + zone.id);
+      dropped.textContent = document.querySelector('[data-value="' + value + '"]').textContent;
+      dropped.setAttribute('draggable', 'false');
+      zone.appendChild(dropped);
+
+      statusEl.className = 'status status--done';
+      statusText.textContent = '"' + value + '" soltado en ' + zone.id + '.';
+    });
+  }
+
+  setupZone(zoneA);
+  setupZone(zoneB, { onlyValue: 'azul' });
+</script>
+
+</body>
+</html>

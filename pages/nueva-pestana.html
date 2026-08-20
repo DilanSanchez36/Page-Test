@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nueva pestaña — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Multi-pestaña</span>
+  <h1>Nueva pestaña</h1>
+  <p>Abre una pestaña/ventana nueva y espera un mensaje de vuelta antes de darse por completada. Útil para probar el manejo de múltiples páginas/contextos.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <div class="panel">
+    <h2>Abrir pestaña con enlace</h2>
+    <p class="helper-text">Enlace normal con <code>target="_blank"</code>.</p>
+    <a class="btn secondary" href="pestana-destino.html" target="_blank" rel="noopener" data-testid="link-open-tab">
+      Abrir en pestaña nueva (enlace)
+    </a>
+  </div>
+
+  <div class="panel">
+    <h2>Abrir pestaña con JavaScript</h2>
+    <p class="helper-text"><code>window.open()</code>. La pestaña nueva envía un mensaje de vuelta con <code>postMessage</code> antes de cerrarse.</p>
+    <button class="btn" id="open-window-btn" data-testid="button-open-tab">Abrir en pestaña nueva (JS)</button>
+
+    <div style="margin-top:18px;">
+      <span class="status status--idle" id="popup-status" data-testid="popup-status" data-state="idle">
+        <span id="popup-status-text">Esperando apertura de la pestaña…</span>
+      </span>
+    </div>
+  </div>
+</main>
+
+<script>
+  const openBtn = document.getElementById('open-window-btn');
+  const statusEl = document.getElementById('popup-status');
+  const statusText = document.getElementById('popup-status-text');
+
+  openBtn.addEventListener('click', () => {
+    statusEl.className = 'status status--pending';
+    statusEl.setAttribute('data-state', 'pending');
+    statusText.textContent = 'Pestaña abierta, esperando confirmación…';
+    window.open('pestana-destino.html', '_blank');
+  });
+
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'pestana-destino-confirmada') {
+      statusEl.className = 'status status--done';
+      statusEl.setAttribute('data-state', 'done');
+      statusText.textContent = 'Confirmado desde la pestaña nueva: "' + event.data.mensaje + '"';
+    }
+  });
+</script>
+
+</body>
+</html>

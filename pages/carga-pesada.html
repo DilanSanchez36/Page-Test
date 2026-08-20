@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Carga pesada — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Espera / carga</span>
+  <h1>Carga pesada</h1>
+  <p>Esta página inyecta 1500 elementos en lotes para simular una vista muy cargada. Usa el marcador de estado para esperar la carga completa en vez de heurísticas de red.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <div class="panel">
+    <h2>Estado de carga</h2>
+    <p class="helper-text">
+      Marcador para el robot: <code>[data-testid="load-status"]</code>.
+      Su atributo <code>data-state</code> vale <code>pending</code> mientras carga y
+      <code>done</code> cuando termina.
+    </p>
+    <span class="status status--pending" id="load-status" data-testid="load-status" data-state="pending">
+      <span id="load-status-text">Cargando… 0 / 1500</span>
+    </span>
+    <div class="progress-bar"><div id="progress-fill" data-testid="progress-fill"></div></div>
+    <button class="btn secondary" id="restart-btn" data-testid="restart-load">Reiniciar carga</button>
+  </div>
+
+  <div class="panel">
+    <h2>Contenido</h2>
+    <div class="item-list" id="item-list" data-testid="item-list"></div>
+  </div>
+</main>
+
+<script>
+  const TOTAL_ITEMS = 1500;
+  const BATCH_SIZE = 40;
+  const list = document.getElementById('item-list');
+  const statusEl = document.getElementById('load-status');
+  const statusText = document.getElementById('load-status-text');
+  const fill = document.getElementById('progress-fill');
+  const restartBtn = document.getElementById('restart-btn');
+
+  const LOREM = [
+    'Registro de auditoría procesado correctamente.',
+    'Elemento de prueba generado para validar el renderizado masivo.',
+    'Sincronización de datos completada sin incidencias.',
+    'Nodo de contenido de relleno para pruebas de scroll y carga.',
+    'Entrada de log simulada con marca de tiempo ficticia.'
+  ];
+
+  function renderBatch(start) {
+    const end = Math.min(start + BATCH_SIZE, TOTAL_ITEMS);
+    const frag = document.createDocumentFragment();
+    for (let i = start; i < end; i++) {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.setAttribute('data-testid', 'load-item-' + i);
+      div.textContent = '#' + (i + 1) + ' — ' + LOREM[i % LOREM.length];
+      frag.appendChild(div);
+    }
+    list.appendChild(frag);
+
+    const pct = Math.round((end / TOTAL_ITEMS) * 100);
+    fill.style.width = pct + '%';
+    statusText.textContent = 'Cargando… ' + end + ' / ' + TOTAL_ITEMS;
+
+    if (end < TOTAL_ITEMS) {
+      setTimeout(() => renderBatch(end), 30);
+    } else {
+      statusEl.classList.remove('status--pending');
+      statusEl.classList.add('status--done');
+      statusEl.setAttribute('data-state', 'done');
+      statusText.textContent = 'Carga completa ✅ (' + TOTAL_ITEMS + ' elementos)';
+    }
+  }
+
+  function startLoad() {
+    list.innerHTML = '';
+    fill.style.width = '0%';
+    statusEl.classList.remove('status--done');
+    statusEl.classList.add('status--pending');
+    statusEl.setAttribute('data-state', 'pending');
+    statusText.textContent = 'Cargando… 0 / ' + TOTAL_ITEMS;
+    renderBatch(0);
+  }
+
+  restartBtn.addEventListener('click', startLoad);
+  startLoad();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page Test — Campo de pruebas para robots</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Playwright Playground</span>
+  <h1>Page Test</h1>
+  <p>Sitio de pruebas pensado para que un robot de automatización (Playwright) ejercite distintos patrones de interacción: carga de contenido, formularios complejos, iframes, pestañas nuevas, diálogos, drag&amp;drop, archivos y tablas.</p>
+</header>
+
+<main class="container">
+  <div class="card-grid" data-testid="home-nav">
+
+    <a class="test-card" href="pages/carga-pesada.html" data-testid="nav-carga-pesada">
+      <span class="icon">⏳</span>
+      <h3>Carga pesada</h3>
+      <p>Cientos de elementos inyectados en lotes. Ideal para probar esperas de "carga completa" sin depender de la red.</p>
+      <span class="tag">Espera / carga</span>
+    </a>
+
+    <a class="test-card" href="pages/formulario.html" data-testid="nav-formulario">
+      <span class="icon">📝</span>
+      <h3>Formulario complejo</h3>
+      <p>Inputs, checkboxes, radios, dropdown nativo y personalizado, selección por doble clic, e iframe embebido.</p>
+      <span class="tag">Formularios / iframe</span>
+    </a>
+
+    <a class="test-card" href="pages/nueva-pestana.html" data-testid="nav-nueva-pestana">
+      <span class="icon">🗗</span>
+      <h3>Nueva pestaña</h3>
+      <p>Abre una pestaña nueva que se comunica de vuelta con la principal. Prueba de manejo multi-contexto.</p>
+      <span class="tag">Multi-pestaña</span>
+    </a>
+
+    <a class="test-card" href="pages/alertas.html" data-testid="nav-alertas">
+      <span class="icon">⚠️</span>
+      <h3>Alertas y diálogos</h3>
+      <p>window.alert, confirm, prompt nativos y un modal HTML propio.</p>
+      <span class="tag">Diálogos</span>
+    </a>
+
+    <a class="test-card" href="pages/drag-drop.html" data-testid="nav-drag-drop">
+      <span class="icon">🧲</span>
+      <h3>Drag &amp; Drop</h3>
+      <p>Arrastra elementos entre zonas usando la API nativa de HTML5.</p>
+      <span class="tag">Arrastrar y soltar</span>
+    </a>
+
+    <a class="test-card" href="pages/subida-archivos.html" data-testid="nav-subida-archivos">
+      <span class="icon">📎</span>
+      <h3>Subida de archivos</h3>
+      <p>Input de archivo clásico + zona de arrastre de archivos, con vista previa local.</p>
+      <span class="tag">Archivos</span>
+    </a>
+
+    <a class="test-card" href="pages/tabla.html" data-testid="nav-tabla">
+      <span class="icon">📊</span>
+      <h3>Tabla dinámica</h3>
+      <p>Orden por columna, filtro de texto y paginación sobre datos generados en el cliente.</p>
+      <span class="tag">Tablas</span>
+    </a>
+
+  </div>
+</main>
+
+</body>
+</html>

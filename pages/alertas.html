@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alertas y diálogos — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Diálogos</span>
+  <h1>Alertas y diálogos</h1>
+  <p>Diálogos nativos del navegador (alert, confirm, prompt) y un modal HTML personalizado.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <div class="panel">
+    <h2>Diálogos nativos</h2>
+    <p class="helper-text">Estos usan las APIs nativas del navegador (<code>window.alert/confirm/prompt</code>) — en Playwright se manejan con el evento <code>page.on('dialog')</code>.</p>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
+      <button class="btn" id="btn-alert" data-testid="btn-native-alert">Mostrar alert()</button>
+      <button class="btn" id="btn-confirm" data-testid="btn-native-confirm">Mostrar confirm()</button>
+      <button class="btn" id="btn-prompt" data-testid="btn-native-prompt">Mostrar prompt()</button>
+    </div>
+
+    <span class="status status--idle" id="native-status" data-testid="native-dialog-status" data-state="idle">
+      <span id="native-status-text">Sin interacción todavía.</span>
+    </span>
+  </div>
+
+  <div class="panel">
+    <h2>Modal personalizado</h2>
+    <p class="helper-text">Este es un <code>&lt;div&gt;</code> superpuesto, no un diálogo nativo — no dispara el evento <code>dialog</code> de Playwright.</p>
+    <button class="btn" id="open-modal-btn" data-testid="btn-open-modal">Abrir modal personalizado</button>
+    <span class="status status--idle" id="modal-status" data-testid="modal-status" data-state="idle" style="margin-left:12px;">
+      <span id="modal-status-text">Modal cerrado.</span>
+    </span>
+  </div>
+</main>
+
+<div class="modal-overlay" id="modal-overlay" data-testid="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h3 id="modal-title">Confirmar acción</h3>
+    <p class="helper-text">Este es un modal construido con HTML/CSS, útil para probar la localización de overlays y el foco.</p>
+    <div class="field">
+      <label for="modal-input">Escribe algo antes de confirmar</label>
+      <input type="text" id="modal-input" data-testid="modal-input" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="modal-cancel" data-testid="modal-cancel">Cancelar</button>
+      <button class="btn" id="modal-confirm" data-testid="modal-confirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const nativeStatus = document.getElementById('native-status');
+  const nativeStatusText = document.getElementById('native-status-text');
+
+  function setNativeStatus(text, done) {
+    nativeStatus.className = 'status ' + (done ? 'status--done' : 'status--idle');
+    nativeStatusText.textContent = text;
+  }
+
+  document.getElementById('btn-alert').addEventListener('click', () => {
+    alert('Este es un alert() nativo de prueba.');
+    setNativeStatus('Se mostró y cerró un alert().', true);
+  });
+
+  document.getElementById('btn-confirm').addEventListener('click', () => {
+    const ok = confirm('¿Confirmas la acción de prueba?');
+    setNativeStatus('confirm() devolvió: ' + ok, true);
+  });
+
+  document.getElementById('btn-prompt').addEventListener('click', () => {
+    const value = prompt('Escribe un valor de prueba:', '');
+    setNativeStatus('prompt() devolvió: ' + (value === null ? 'null (cancelado)' : '"' + value + '"'), true);
+  });
+
+  // Modal personalizado
+  const overlay = document.getElementById('modal-overlay');
+  const modalStatus = document.getElementById('modal-status');
+  const modalStatusText = document.getElementById('modal-status-text');
+
+  function setModalStatus(text) {
+    modalStatusText.textContent = text;
+  }
+
+  document.getElementById('open-modal-btn').addEventListener('click', () => {
+    overlay.hidden = false;
+    modalStatus.className = 'status status--pending';
+    setModalStatus('Modal abierto, esperando confirmación…');
+    document.getElementById('modal-input').focus();
+  });
+
+  document.getElementById('modal-cancel').addEventListener('click', () => {
+    overlay.hidden = true;
+    modalStatus.className = 'status status--idle';
+    setModalStatus('Modal cerrado (cancelado).');
+  });
+
+  document.getElementById('modal-confirm').addEventListener('click', () => {
+    const value = document.getElementById('modal-input').value.trim();
+    overlay.hidden = true;
+    modalStatus.className = 'status status--done';
+    setModalStatus('Modal confirmado con valor: "' + value + '"');
+  });
+</script>
+
+</body>
+</html>

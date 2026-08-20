@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pestaña destino — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Multi-pestaña</span>
+  <h1>Pestaña destino</h1>
+  <p>Esta es la pestaña/ventana nueva. Si fue abierta con <code>window.open()</code> desde la principal, puede avisarle y cerrarse.</p>
+</header>
+
+<main class="container">
+  <div class="panel">
+    <p id="context-info" data-testid="context-info">Comprobando el contexto de apertura…</p>
+    <button class="btn" id="confirm-btn" data-testid="confirm-and-close">Confirmar y notificar a la pestaña principal</button>
+  </div>
+</main>
+
+<script>
+  const infoEl = document.getElementById('context-info');
+  const btn = document.getElementById('confirm-btn');
+  const hasOpener = !!window.opener;
+
+  infoEl.textContent = hasOpener
+    ? 'Esta pestaña fue abierta por otra (window.opener disponible).'
+    : 'Esta pestaña se abrió sin referencia al opener (por ejemplo, con un enlace target="_blank").';
+
+  btn.addEventListener('click', () => {
+    if (hasOpener) {
+      window.opener.postMessage({ type: 'pestana-destino-confirmada', mensaje: 'Todo listo ✅' }, '*');
+      infoEl.textContent = 'Mensaje enviado a la pestaña principal. Cerrando…';
+      setTimeout(() => window.close(), 400);
+    } else {
+      infoEl.textContent = 'No hay pestaña principal a la que avisar (no hay window.opener).';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Formulario complejo — Page Test</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<header class="page-header">
+  <span class="eyebrow">Formularios / iframe</span>
+  <h1>Formulario complejo</h1>
+  <p>Reúne los controles más comunes (y algunos incómodos): texto, checkboxes, radios, dropdown nativo, dropdown personalizado, selección por doble clic e iframe embebido.</p>
+</header>
+
+<main class="container">
+  <a class="back-link" href="../index.html">← Volver al inicio</a>
+
+  <form id="main-form" data-testid="main-form">
+
+    <div class="panel">
+      <h2>Datos básicos</h2>
+
+      <div class="field">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" data-testid="input-nombre" required />
+      </div>
+
+      <div class="field">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" data-testid="input-email" required />
+      </div>
+
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" data-testid="input-password" required minlength="4" />
+      </div>
+
+      <div class="field">
+        <label for="comentarios">Comentarios</label>
+        <textarea id="comentarios" name="comentarios" rows="3" data-testid="input-comentarios"></textarea>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Checkboxes y radios</h2>
+
+      <fieldset>
+        <legend>Intereses</legend>
+        <div class="checkbox-row">
+          <input type="checkbox" id="interes-frontend" name="intereses" value="frontend" data-testid="checkbox-frontend" />
+          <label for="interes-frontend" style="margin:0;">Frontend</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="interes-backend" name="intereses" value="backend" data-testid="checkbox-backend" />
+          <label for="interes-backend" style="margin:0;">Backend</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="interes-qa" name="intereses" value="qa" data-testid="checkbox-qa" />
+          <label for="interes-qa" style="margin:0;">QA / Automatización</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Plan</legend>
+        <div class="radio-row">
+          <input type="radio" id="plan-basico" name="plan" value="basico" data-testid="radio-plan-basico" />
+          <label for="plan-basico" style="margin:0;">Básico</label>
+        </div>
+        <div class="radio-row">
+          <input type="radio" id="plan-pro" name="plan" value="pro" data-testid="radio-plan-pro" />
+          <label for="plan-pro" style="margin:0;">Pro</label>
+        </div>
+        <div class="radio-row">
+          <input type="radio" id="plan-enterprise" name="plan" value="enterprise" data-testid="radio-plan-enterprise" />
+          <label for="plan-enterprise" style="margin:0;">Enterprise</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="panel">
+      <h2>Dropdowns</h2>
+
+      <div class="field">
+        <label for="pais">País (dropdown nativo)</label>
+        <select id="pais" name="pais" data-testid="select-pais" required>
+          <option value="">Selecciona un país</option>
+          <option value="cl">Chile</option>
+          <option value="ar">Argentina</option>
+          <option value="mx">México</option>
+          <option value="co">Colombia</option>
+          <option value="es">España</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label id="rol-label">Rol (dropdown personalizado)</label>
+        <div class="dropdown" data-testid="dropdown-rol">
+          <button type="button" class="dropdown-toggle" id="rol-toggle"
+                  data-testid="dropdown-rol-toggle" aria-haspopup="listbox" aria-expanded="false">
+            <span id="rol-selected-text">Selecciona un rol</span>
+            <span>▾</span>
+          </button>
+          <ul class="dropdown-menu" id="rol-menu" role="listbox" aria-labelledby="rol-label" hidden>
+            <li class="dropdown-option" role="option" data-value="dev" data-testid="dropdown-rol-option-dev">Desarrollador/a</li>
+            <li class="dropdown-option" role="option" data-value="qa" data-testid="dropdown-rol-option-qa">QA Engineer</li>
+            <li class="dropdown-option" role="option" data-value="pm" data-testid="dropdown-rol-option-pm">Product Manager</li>
+            <li class="dropdown-option" role="option" data-value="disenio" data-testid="dropdown-rol-option-disenio">Diseñador/a</li>
+          </ul>
+          <input type="hidden" id="rol-value" name="rol" data-testid="input-rol-value" />
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Selección por doble clic</h2>
+      <p class="helper-text">Estas tarjetas solo cambian de estado con <strong>doble clic</strong> (o doble toque). Un solo clic no hace nada.</p>
+      <div class="select-card-grid" id="select-cards" data-testid="select-card-group">
+        <div class="select-card" data-value="plata" data-testid="select-card-plata">
+          Plan Plata
+          <span class="hint">Doble clic para elegir</span>
+        </div>
+        <div class="select-card" data-value="oro" data-testid="select-card-oro">
+          Plan Oro
+          <span class="hint">Doble clic para elegir</span>
+        </div>
+        <div class="select-card" data-value="platino" data-testid="select-card-platino">
+          Plan Platino
+          <span class="hint">Doble clic para elegir</span>
+        </div>
+      </div>
+      <input type="hidden" id="select-card-value" name="tarjeta" data-testid="input-select-card-value" />
+    </div>
+
+    <div class="panel">
+      <h2>Contenido embebido (iframe)</h2>
+      <p class="helper-text">Este bloque vive dentro de un <code>&lt;iframe&gt;</code> independiente — hay que usar un <em>frame locator</em> para interactuar con él.</p>
+      <div class="iframe-box">
+        <iframe src="iframe-contenido.html" title="Contenido embebido" data-testid="embedded-iframe"></iframe>
+      </div>
+    </div>
+
+    <div class="panel">
+      <button type="submit" class="btn" data-testid="form-submit">Enviar formulario</button>
+      <span id="form-error" data-testid="form-error" style="display:none; color: var(--danger); margin-left: 12px;"></span>
+    </div>
+
+    <div class="panel" id="form-success" data-testid="form-success" hidden>
+      <h2>✅ Formulario enviado</h2>
+      <ul id="form-summary" data-testid="form-summary"></ul>
+    </div>
+
+  </form>
+</main>
+
+<script>
+  // Dropdown personalizado
+  const rolToggle = document.getElementById('rol-toggle');
+  const rolMenu = document.getElementById('rol-menu');
+  const rolValue = document.getElementById('rol-value');
+  const rolSelectedText = document.getElementById('rol-selected-text');
+
+  rolToggle.addEventListener('click', () => {
+    const expanded = rolToggle.getAttribute('aria-expanded') === 'true';
+    rolToggle.setAttribute('aria-expanded', String(!expanded));
+    rolMenu.hidden = expanded;
+  });
+
+  rolMenu.querySelectorAll('.dropdown-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      rolMenu.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      rolValue.value = opt.getAttribute('data-value');
+      rolSelectedText.textContent = opt.textContent;
+      rolMenu.hidden = true;
+      rolToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-testid="dropdown-rol"]')) {
+      rolMenu.hidden = true;
+      rolToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Tarjetas de doble clic
+  const cardValueInput = document.getElementById('select-card-value');
+  document.querySelectorAll('.select-card').forEach(card => {
+    card.addEventListener('dblclick', () => {
+      document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      cardValueInput.value = card.getAttribute('data-value');
+    });
+  });
+
+  // Envío del formulario
+  const form = document.getElementById('main-form');
+  const errorEl = document.getElementById('form-error');
+  const successEl = document.getElementById('form-success');
+  const summaryEl = document.getElementById('form-summary');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorEl.style.display = 'none';
+
+    const nombre = document.getElementById('nombre').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const pais = document.getElementById('pais').value;
+    const rol = rolValue.value;
+    const tarjeta = cardValueInput.value;
+
+    if (!nombre || !email || !pais || !rol || !tarjeta) {
+      errorEl.textContent = 'Completa nombre, email, país, rol y elige una tarjeta (doble clic) antes de enviar.';
+      errorEl.style.display = 'inline';
+      successEl.hidden = true;
+      return;
+    }
+
+    const intereses = Array.from(document.querySelectorAll('input[name="intereses"]:checked')).map(i => i.value);
+    const plan = document.querySelector('input[name="plan"]:checked');
+
+    summaryEl.innerHTML = '';
+    const items = {
+      Nombre: nombre,
+      Email: email,
+      País: pais,
+      Rol: rol,
+      'Plan (radio)': plan ? plan.value : '—',
+      Intereses: intereses.join(', ') || '—',
+      'Tarjeta elegida': tarjeta
+    };
+    Object.entries(items).forEach(([k, v]) => {
+      const li = document.createElement('li');
+      li.textContent = k + ': ' + v;
+      summaryEl.appendChild(li);
+    });
+
+    successEl.hidden = false;
+  });
+</script>
+
+</body>
+</html>
