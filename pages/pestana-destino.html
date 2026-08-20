@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pestaña destino — Page Test</title>
-<link rel="stylesheet" href="../css/style.css?v=4" />
+<link rel="stylesheet" href="../css/style.css?v=5" />
 </head>
 <body>
 
@@ -15,7 +15,30 @@
 </header>
 
 <main class="container">
-  <img class="banner-image" src="../assets/images/heavy/photo-12.jpg?v=3" alt="Libro" data-testid="banner-image" style="margin-bottom:20px;" />
+  <div class="banner-wrapper" data-testid="banner-wrapper">
+    <img class="banner-image" id="banner-img" src="../assets/images/heavy/photo-12.jpg?v=3" alt="Libro" data-testid="banner-image" data-revealed="false" />
+    <div class="banner-skeleton" id="banner-skeleton" data-testid="banner-skeleton"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Retardo de aparición de la imagen</h2>
+    <p class="helper-text">
+      Configura cuántos milisegundos deben pasar, después de que carga la página, antes de que se muestre
+      la imagen de arriba (mientras tanto se ve en gris). El valor se guarda en <code>localStorage</code>:
+      si recargas la página, el temporizador vuelve a correr desde cero usando este mismo valor guardado,
+      no se pierde.
+    </p>
+    <div class="field" style="max-width:220px; display:inline-block; margin-right:12px; vertical-align:top;">
+      <label for="image-delay-input">Retardo (ms)</label>
+      <input type="number" id="image-delay-input" data-testid="image-delay-input" min="0" step="500" placeholder="Ej: 30000" />
+    </div>
+    <button class="btn" id="image-delay-save" data-testid="image-delay-save" style="margin-top:24px;">Guardar y aplicar</button>
+    <div style="margin-top:14px;">
+      <span class="status status--pending" id="image-delay-status" data-testid="image-delay-status" data-state="pending">
+        <span id="image-delay-status-text">—</span>
+      </span>
+    </div>
+  </div>
 
   <div class="panel">
     <p id="context-info" data-testid="context-info">Comprobando el contexto de apertura…</p>
@@ -24,6 +47,70 @@
 </main>
 
 <script>
+  // ---------- Retardo persistente de la imagen ----------
+  const DELAY_STORAGE_KEY = 'pageTest.pestanaDestino.imageDelayMs';
+
+  const bannerImg = document.getElementById('banner-img');
+  const bannerSkeleton = document.getElementById('banner-skeleton');
+  const delayInput = document.getElementById('image-delay-input');
+  const delaySaveBtn = document.getElementById('image-delay-save');
+  const delayStatusEl = document.getElementById('image-delay-status');
+  const delayStatusText = document.getElementById('image-delay-status-text');
+
+  let revealTimeout = null;
+  let countdownInterval = null;
+
+  function getSavedDelay() {
+    const raw = localStorage.getItem(DELAY_STORAGE_KEY);
+    const n = parseInt(raw, 10);
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  }
+
+  function startReveal(delayMs) {
+    clearTimeout(revealTimeout);
+    clearInterval(countdownInterval);
+
+    bannerImg.classList.remove('is-revealed');
+    bannerImg.setAttribute('data-revealed', 'false');
+    bannerSkeleton.hidden = false;
+    delayStatusEl.setAttribute('data-delay-ms', delayMs);
+
+    const targetTime = Date.now() + delayMs;
+
+    function tick() {
+      const remaining = Math.max(0, targetTime - Date.now());
+      if (remaining <= 0) {
+        clearInterval(countdownInterval);
+        bannerSkeleton.hidden = true;
+        bannerImg.classList.add('is-revealed');
+        bannerImg.setAttribute('data-revealed', 'true');
+        delayStatusEl.className = 'status status--done';
+        delayStatusEl.setAttribute('data-state', 'done');
+        delayStatusText.textContent = 'Imagen visible ✅ (retardo configurado: ' + delayMs + ' ms)';
+      } else {
+        delayStatusEl.className = 'status status--pending';
+        delayStatusEl.setAttribute('data-state', 'pending');
+        delayStatusText.textContent = 'Apareceré en ' + remaining + ' ms…';
+      }
+    }
+
+    tick();
+    if (delayMs > 0) {
+      countdownInterval = setInterval(tick, 100);
+    }
+  }
+
+  const savedDelay = getSavedDelay();
+  delayInput.value = savedDelay || '';
+  startReveal(savedDelay);
+
+  delaySaveBtn.addEventListener('click', () => {
+    const value = Math.max(0, parseInt(delayInput.value, 10) || 0);
+    localStorage.setItem(DELAY_STORAGE_KEY, String(value));
+    delayInput.value = value;
+    startReveal(value);
+  });
+
   const infoEl = document.getElementById('context-info');
   const btn = document.getElementById('confirm-btn');
   const hasOpener = !!window.opener;

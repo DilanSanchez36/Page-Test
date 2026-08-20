@@ -683,6 +683,37 @@ code {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   margin-top: 16px;
+  display: block;
+}
+
+.banner-wrapper {
+  position: relative;
+}
+
+/* Only banner images inside a .banner-wrapper support the delayed-reveal state
+   (used on pestana-destino.html) — plain .banner-image usages elsewhere show immediately. */
+.banner-wrapper .banner-image {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.banner-wrapper .banner-image.is-revealed {
+  opacity: 1;
+}
+
+.banner-skeleton {
+  position: absolute;
+  inset: 0;
+  top: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(100deg, var(--surface-alt) 30%, #29344d 50%, var(--surface-alt) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite linear;
+}
+
+.banner-skeleton[hidden] {
+  display: none;
 }
 
 .file-preview-thumb {
