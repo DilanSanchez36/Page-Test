@@ -27,6 +27,7 @@
       <table class="data-table" data-testid="data-table">
         <thead>
           <tr>
+            <th data-testid="th-avatar">Avatar</th>
             <th data-key="id" data-testid="th-id">ID <span class="arrow"></span></th>
             <th data-key="nombre" data-testid="th-nombre">Nombre <span class="arrow"></span></th>
             <th data-key="rol" data-testid="th-rol">Rol <span class="arrow"></span></th>
@@ -97,7 +98,10 @@
     pageRows.forEach(row => {
       const tr = document.createElement('tr');
       tr.setAttribute('data-testid', 'table-row-' + row.id);
+      const avatarNum = String((row.id % 10) + 1).padStart(2, '0');
       tr.innerHTML =
+        '<td><img class="avatar-thumb" src="../assets/images/avatar/avatar-' + avatarNum + '.svg" ' +
+          'alt="Avatar de ' + row.nombre + '" data-testid="avatar-' + row.id + '" /></td>' +
         '<td data-testid="cell-id-' + row.id + '">' + row.id + '</td>' +
         '<td data-testid="cell-nombre-' + row.id + '">' + row.nombre + '</td>' +
         '<td data-testid="cell-rol-' + row.id + '">' + row.rol + '</td>' +

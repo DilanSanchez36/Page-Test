@@ -11,7 +11,7 @@
 <header class="page-header">
   <span class="eyebrow">Archivos</span>
   <h1>Subida de archivos</h1>
-  <p>Input de archivo clásico y una zona de arrastre de archivos. Todo se procesa localmente en el navegador, sin enviarse a ningún servidor.</p>
+  <p>Input de archivo clásico y una zona de arrastre de archivos. Todo se procesa localmente en el navegador, sin enviarse a ningún servidor. Si subes una imagen, se muestra una miniatura real — el repo incluye imágenes de muestra en <code>assets/images/heavy/</code> y <code>assets/images/avatar/</code> que sirven como fixtures para <code>setInputFiles</code> en Playwright.</p>
 </header>
 
 <main class="container">
@@ -63,7 +63,30 @@
     fileArray.forEach((file, i) => {
       const li = document.createElement('li');
       li.setAttribute('data-testid', 'file-item-' + i);
-      li.innerHTML = '<span>' + file.name + '</span><span>' + formatSize(file.size) + '</span>';
+
+      const left = document.createElement('span');
+      left.style.display = 'flex';
+      left.style.alignItems = 'center';
+
+      if (file.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.className = 'file-preview-thumb';
+        img.setAttribute('data-testid', 'file-preview-' + i);
+        img.alt = file.name;
+        img.src = URL.createObjectURL(file);
+        img.addEventListener('load', () => URL.revokeObjectURL(img.src), { once: true });
+        left.appendChild(img);
+      }
+
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = file.name;
+      left.appendChild(nameSpan);
+
+      const sizeSpan = document.createElement('span');
+      sizeSpan.textContent = formatSize(file.size);
+
+      li.appendChild(left);
+      li.appendChild(sizeSpan);
       fileList.appendChild(li);
     });
   }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="ag6" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4dd2c0" />
+      <stop offset="100%" stop-color="#4d7bff" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="60" fill="url(#ag6)" />
+  <text x="50%" y="54%" font-family="sans-serif" font-size="34" font-weight="700"
+    fill="rgba(255,255,255,0.92)" text-anchor="middle" dominant-baseline="middle">U7</text>
+</svg>

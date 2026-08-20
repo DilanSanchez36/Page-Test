@@ -20,6 +20,13 @@
   <form id="main-form" data-testid="main-form">
 
     <div class="panel">
+      <h2>Foto de perfil</h2>
+      <p class="helper-text">Elige un avatar con un clic. Son imágenes reales (<code>&lt;img&gt;</code>), útiles para que el robot valide selección visual y estado <code>selected</code>.</p>
+      <div class="avatar-pick-grid" id="avatar-pick-grid" data-testid="avatar-pick-grid"></div>
+      <input type="hidden" id="avatar-value" name="avatar" data-testid="input-avatar-value" />
+    </div>
+
+    <div class="panel">
       <h2>Datos básicos</h2>
 
       <div class="field">
@@ -155,6 +162,24 @@
 </main>
 
 <script>
+  // Selector de avatar (imágenes reales)
+  const avatarGrid = document.getElementById('avatar-pick-grid');
+  const avatarValue = document.getElementById('avatar-value');
+  for (let i = 1; i <= 10; i++) {
+    const n = String(i).padStart(2, '0');
+    const wrap = document.createElement('div');
+    wrap.className = 'avatar-pick';
+    wrap.setAttribute('data-testid', 'avatar-option-' + n);
+    wrap.setAttribute('data-value', 'avatar-' + n);
+    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.svg" alt="Avatar ' + n + '" />';
+    wrap.addEventListener('click', () => {
+      avatarGrid.querySelectorAll('.avatar-pick').forEach(el => el.classList.remove('selected'));
+      wrap.classList.add('selected');
+      avatarValue.value = wrap.getAttribute('data-value');
+    });
+    avatarGrid.appendChild(wrap);
+  }
+
   // Dropdown personalizado
   const rolToggle = document.getElementById('rol-toggle');
   const rolMenu = document.getElementById('rol-menu');
@@ -223,6 +248,7 @@
 
     summaryEl.innerHTML = '';
     const items = {
+      Avatar: avatarValue.value || '—',
       Nombre: nombre,
       Email: email,
       País: pais,

@@ -11,40 +11,63 @@
 <header class="page-header">
   <span class="eyebrow">Espera / carga</span>
   <h1>Carga pesada</h1>
-  <p>Esta página inyecta 1500 elementos en lotes para simular una vista muy cargada. Usa el marcador de estado para esperar la carga completa en vez de heurísticas de red.</p>
+  <p>Esta página inyecta 1500 elementos de texto en lotes y 24 imágenes de carga progresiva (lo que más suele demorar el render real), y expone un panel de métricas estilo devtools para medir cada etapa.</p>
 </header>
 
 <main class="container">
   <a class="back-link" href="../index.html">← Volver al inicio</a>
 
   <div class="panel">
-    <h2>Estado de carga</h2>
+    <h2>Estado general</h2>
     <p class="helper-text">
-      Marcador para el robot: <code>[data-testid="load-status"]</code>.
-      Su atributo <code>data-state</code> vale <code>pending</code> mientras carga y
-      <code>done</code> cuando termina.
+      Marcador combinado para el robot: <code>[data-testid="load-status"]</code>.
+      Su atributo <code>data-state</code> vale <code>pending</code> hasta que <strong>tanto el texto como las imágenes</strong> terminan de cargar, y pasa a <code>done</code> recién entonces.
     </p>
     <span class="status status--pending" id="load-status" data-testid="load-status" data-state="pending">
-      <span id="load-status-text">Cargando… 0 / 1500</span>
+      <span id="load-status-text">Cargando…</span>
     </span>
-    <div class="progress-bar"><div id="progress-fill" data-testid="progress-fill"></div></div>
-    <button class="btn secondary" id="restart-btn" data-testid="restart-load">Reiniciar carga</button>
+    <button class="btn secondary" id="restart-btn" data-testid="restart-load" style="margin-left:12px;">Reiniciar carga</button>
   </div>
 
   <div class="panel">
-    <h2>Contenido</h2>
+    <h2>Panel de tiempos (estilo devtools)</h2>
+    <p class="helper-text">
+      Cada fila usa <code>Performance API</code> (hitos nativos del navegador) o <code>performance.mark()</code>
+      (hitos propios de esta página). El valor en <code>ms</code> también está en el atributo
+      <code>data-ms</code> de cada fila (<code>[data-testid="metric-&lt;clave&gt;"]</code>) para que el robot lo lea directamente.
+    </p>
+    <div class="metrics-table" id="metrics-table" data-testid="metrics-table"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Texto (1500 elementos, en lotes)</h2>
+    <span class="status status--pending" id="text-status" data-testid="text-status" data-state="pending">
+      <span id="text-status-text">Cargando… 0 / 1500</span>
+    </span>
+    <div class="progress-bar"><div id="progress-fill" data-testid="progress-fill"></div></div>
     <div class="item-list" id="item-list" data-testid="item-list"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Imágenes (24, carga progresiva)</h2>
+    <p class="helper-text">
+      Cada casilla arranca como un <em>skeleton</em> animado (sin imagen todavía, "carga parcial") y cambia a
+      la imagen real al terminar de decodificar (<code>[data-testid="heavy-image-N"]</code>,
+      <code>data-loaded="true|false"</code>).
+    </p>
+    <span class="status status--pending" id="image-status" data-testid="image-status" data-state="pending">
+      <span id="image-status-text">Cargando… 0 / 24</span>
+    </span>
+    <div class="progress-bar"><div id="image-progress-fill" data-testid="image-progress-fill"></div></div>
+    <div class="image-grid" id="image-grid" data-testid="image-grid"></div>
   </div>
 </main>
 
 <script>
+  // ---------- Configuración ----------
   const TOTAL_ITEMS = 1500;
-  const BATCH_SIZE = 40;
-  const list = document.getElementById('item-list');
-  const statusEl = document.getElementById('load-status');
-  const statusText = document.getElementById('load-status-text');
-  const fill = document.getElementById('progress-fill');
-  const restartBtn = document.getElementById('restart-btn');
+  const TEXT_BATCH_SIZE = 40;
+  const TOTAL_IMAGES = 24;
 
   const LOREM = [
     'Registro de auditoría procesado correctamente.',
@@ -54,8 +77,30 @@
     'Entrada de log simulada con marca de tiempo ficticia.'
   ];
 
-  function renderBatch(start) {
-    const end = Math.min(start + BATCH_SIZE, TOTAL_ITEMS);
+  // ---------- Elementos ----------
+  const list = document.getElementById('item-list');
+  const textStatusEl = document.getElementById('text-status');
+  const textStatusText = document.getElementById('text-status-text');
+  const textFill = document.getElementById('progress-fill');
+
+  const imageGrid = document.getElementById('image-grid');
+  const imageStatusEl = document.getElementById('image-status');
+  const imageStatusText = document.getElementById('image-status-text');
+  const imageFill = document.getElementById('image-progress-fill');
+
+  const overallStatusEl = document.getElementById('load-status');
+  const overallStatusText = document.getElementById('load-status-text');
+  const restartBtn = document.getElementById('restart-btn');
+  const metricsTable = document.getElementById('metrics-table');
+
+  let textDone = false;
+  let imagesDone = false;
+  let imagesLoadedCount = 0;
+  let firstImageMarked = false;
+
+  // ---------- Texto en lotes ----------
+  function renderTextBatch(start) {
+    const end = Math.min(start + TEXT_BATCH_SIZE, TOTAL_ITEMS);
     const frag = document.createDocumentFragment();
     for (let i = start; i < end; i++) {
       const div = document.createElement('div');
@@ -67,30 +112,187 @@
     list.appendChild(frag);
 
     const pct = Math.round((end / TOTAL_ITEMS) * 100);
-    fill.style.width = pct + '%';
-    statusText.textContent = 'Cargando… ' + end + ' / ' + TOTAL_ITEMS;
+    textFill.style.width = pct + '%';
+    textStatusText.textContent = 'Cargando… ' + end + ' / ' + TOTAL_ITEMS;
 
     if (end < TOTAL_ITEMS) {
-      setTimeout(() => renderBatch(end), 30);
+      setTimeout(() => renderTextBatch(end), 30);
     } else {
-      statusEl.classList.remove('status--pending');
-      statusEl.classList.add('status--done');
-      statusEl.setAttribute('data-state', 'done');
-      statusText.textContent = 'Carga completa ✅ (' + TOTAL_ITEMS + ' elementos)';
+      textStatusEl.classList.remove('status--pending');
+      textStatusEl.classList.add('status--done');
+      textStatusEl.setAttribute('data-state', 'done');
+      textStatusText.textContent = 'Texto listo ✅ (' + TOTAL_ITEMS + ' elementos)';
+      performance.mark('text-items-complete');
+      textDone = true;
+      checkOverallDone();
+      refreshMetrics();
     }
   }
 
+  // ---------- Imágenes con carga progresiva ----------
+  function buildImageTiles() {
+    for (let i = 0; i < TOTAL_IMAGES; i++) {
+      const n = i + 1;
+      const tile = document.createElement('div');
+      tile.className = 'image-tile';
+      tile.setAttribute('data-testid', 'heavy-image-tile-' + n);
+
+      const img = document.createElement('img');
+      img.alt = 'Imagen de prueba ' + n;
+      img.setAttribute('data-testid', 'heavy-image-' + n);
+      img.setAttribute('data-loaded', 'false');
+      img.dataset.src = '../assets/images/heavy/photo-' + String(n).padStart(2, '0') + '.svg';
+
+      img.addEventListener('load', () => {
+        tile.classList.add('is-loaded');
+        img.setAttribute('data-loaded', 'true');
+        imagesLoadedCount++;
+
+        if (!firstImageMarked) {
+          performance.mark('first-image-loaded');
+          firstImageMarked = true;
+        }
+
+        const pct = Math.round((imagesLoadedCount / TOTAL_IMAGES) * 100);
+        imageFill.style.width = pct + '%';
+        imageStatusText.textContent = 'Cargando… ' + imagesLoadedCount + ' / ' + TOTAL_IMAGES;
+
+        if (imagesLoadedCount === TOTAL_IMAGES) {
+          performance.mark('all-images-loaded');
+          imageStatusEl.classList.remove('status--pending');
+          imageStatusEl.classList.add('status--done');
+          imageStatusEl.setAttribute('data-state', 'done');
+          imageStatusText.textContent = 'Imágenes listas ✅ (' + TOTAL_IMAGES + ')';
+          imagesDone = true;
+          checkOverallDone();
+        }
+        refreshMetrics();
+      });
+
+      tile.appendChild(img);
+      imageGrid.appendChild(tile);
+    }
+  }
+
+  function loadImagesProgressively() {
+    const tiles = Array.from(imageGrid.querySelectorAll('img'));
+    let idx = 0;
+    const BATCH = 2;
+
+    function loadNext() {
+      const end = Math.min(idx + BATCH, tiles.length);
+      for (; idx < end; idx++) {
+        tiles[idx].src = tiles[idx].dataset.src;
+      }
+      if (idx < tiles.length) {
+        setTimeout(loadNext, 120 + Math.random() * 180);
+      }
+    }
+    loadNext();
+  }
+
+  // ---------- Estado combinado ----------
+  function checkOverallDone() {
+    if (textDone && imagesDone) {
+      performance.mark('page-fully-ready');
+      overallStatusEl.classList.remove('status--pending');
+      overallStatusEl.classList.add('status--done');
+      overallStatusEl.setAttribute('data-state', 'done');
+      overallStatusText.textContent = 'Carga completa ✅ (texto + imágenes)';
+      refreshMetrics();
+    }
+  }
+
+  // ---------- Panel de métricas tipo devtools ----------
+  function getMarkTime(name) {
+    const entries = performance.getEntriesByName(name, 'mark');
+    return entries.length ? entries[entries.length - 1].startTime : null;
+  }
+
+  function getPaintTime(name) {
+    const entries = performance.getEntriesByType('paint').filter(e => e.name === name);
+    return entries.length ? entries[0].startTime : null;
+  }
+
+  function buildMetricRows() {
+    const nav = performance.getEntriesByType('navigation')[0];
+
+    return [
+      { key: 'dom-interactive', label: 'DOM interactivo', value: nav ? nav.domInteractive : null, custom: false },
+      { key: 'dom-content-loaded', label: 'DOMContentLoaded', value: nav ? nav.domContentLoadedEventEnd : null, custom: false },
+      { key: 'first-paint', label: 'First Paint', value: getPaintTime('first-paint'), custom: false },
+      { key: 'first-contentful-paint', label: 'First Contentful Paint', value: getPaintTime('first-contentful-paint'), custom: false },
+      { key: 'window-load', label: "Evento 'load' del navegador", value: nav ? nav.loadEventEnd : null, custom: false },
+      { key: 'text-complete', label: 'Texto listo (1500 items)', value: getMarkTime('text-items-complete'), custom: true },
+      { key: 'first-image', label: 'Primera imagen visible', value: getMarkTime('first-image-loaded'), custom: true },
+      { key: 'all-images', label: 'Todas las imágenes listas (24)', value: getMarkTime('all-images-loaded'), custom: true },
+      { key: 'page-fully-ready', label: 'Página 100% lista (custom)', value: getMarkTime('page-fully-ready'), custom: true }
+    ];
+  }
+
+  function refreshMetrics() {
+    const rows = buildMetricRows();
+    const maxValue = Math.max(1, ...rows.map(r => r.value || 0));
+
+    metricsTable.innerHTML = '';
+    rows.forEach(row => {
+      const el = document.createElement('div');
+      el.className = 'metric-row' + (row.custom ? ' is-custom' : '');
+      el.setAttribute('data-testid', 'metric-' + row.key);
+      if (row.value !== null) {
+        el.setAttribute('data-ms', Math.round(row.value));
+      }
+
+      const pct = row.value !== null ? Math.min(100, (row.value / maxValue) * 100) : 0;
+
+      el.innerHTML =
+        '<span class="metric-label">' + row.label + '</span>' +
+        '<span class="metric-bar-track"><span class="metric-bar-fill" style="width:' + pct + '%"></span></span>' +
+        '<span class="metric-value">' + (row.value !== null ? Math.round(row.value) + ' ms' : '—') + '</span>' +
+        '<span class="metric-flag">' + (row.value !== null ? '✅' : '⏳') + '</span>';
+
+      metricsTable.appendChild(el);
+    });
+  }
+
+  // ---------- Arranque / reinicio ----------
   function startLoad() {
+    performance.clearMarks();
+    textDone = false;
+    imagesDone = false;
+    imagesLoadedCount = 0;
+    firstImageMarked = false;
+
     list.innerHTML = '';
-    fill.style.width = '0%';
-    statusEl.classList.remove('status--done');
-    statusEl.classList.add('status--pending');
-    statusEl.setAttribute('data-state', 'pending');
-    statusText.textContent = 'Cargando… 0 / ' + TOTAL_ITEMS;
-    renderBatch(0);
+    textFill.style.width = '0%';
+    textStatusEl.classList.remove('status--done');
+    textStatusEl.classList.add('status--pending');
+    textStatusEl.setAttribute('data-state', 'pending');
+    textStatusText.textContent = 'Cargando… 0 / ' + TOTAL_ITEMS;
+
+    imageGrid.innerHTML = '';
+    imageFill.style.width = '0%';
+    imageStatusEl.classList.remove('status--done');
+    imageStatusEl.classList.add('status--pending');
+    imageStatusEl.setAttribute('data-state', 'pending');
+    imageStatusText.textContent = 'Cargando… 0 / ' + TOTAL_IMAGES;
+
+    overallStatusEl.classList.remove('status--done');
+    overallStatusEl.classList.add('status--pending');
+    overallStatusEl.setAttribute('data-state', 'pending');
+    overallStatusText.textContent = 'Cargando…';
+
+    buildImageTiles();
+    renderTextBatch(0);
+    loadImagesProgressively();
+    refreshMetrics();
   }
 
   restartBtn.addEventListener('click', startLoad);
+
+  window.addEventListener('load', () => setTimeout(refreshMetrics, 0));
+  new PerformanceObserver(() => refreshMetrics()).observe({ type: 'paint', buffered: true });
+
   startLoad();
 </script>
 
