@@ -174,7 +174,7 @@
     wrap.className = 'avatar-pick';
     wrap.setAttribute('data-testid', 'avatar-option-' + key);
     wrap.setAttribute('data-value', key);
-    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.svg" alt="' + label + '" />';
+    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.svg?v=2" alt="' + label + '" />';
     wrap.addEventListener('click', () => {
       avatarGrid.querySelectorAll('.avatar-pick').forEach(el => el.classList.remove('selected'));
       wrap.classList.add('selected');

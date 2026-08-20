@@ -148,7 +148,7 @@
       img.setAttribute('data-testid', 'heavy-image-' + n);
       img.setAttribute('data-object', objectLabel.toLowerCase());
       img.setAttribute('data-loaded', 'false');
-      img.dataset.src = '../assets/images/heavy/photo-' + String(n).padStart(2, '0') + '.svg';
+      img.dataset.src = '../assets/images/heavy/photo-' + String(n).padStart(2, '0') + '.svg?v=2';
 
       img.addEventListener('load', () => {
         tile.classList.add('is-loaded');

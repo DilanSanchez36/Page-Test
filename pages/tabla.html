@@ -102,7 +102,7 @@
       const avatarIdx = row.id % 10;
       const avatarNum = String(avatarIdx + 1).padStart(2, '0');
       tr.innerHTML =
-        '<td><img class="avatar-thumb" src="../assets/images/avatar/avatar-' + avatarNum + '.svg" ' +
+        '<td><img class="avatar-thumb" src="../assets/images/avatar/avatar-' + avatarNum + '.svg?v=2" ' +
           'alt="' + AVATAR_LABELS[avatarIdx] + '" data-testid="avatar-' + row.id + '" /></td>' +
         '<td data-testid="cell-id-' + row.id + '">' + row.id + '</td>' +
         '<td data-testid="cell-nombre-' + row.id + '">' + row.nombre + '</td>' +
