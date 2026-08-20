@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Carga pesada — Page Test</title>
-<link rel="stylesheet" href="../css/style.css?v=3" />
+<link rel="stylesheet" href="../css/style.css?v=4" />
 </head>
 <body>
 
@@ -132,7 +132,7 @@
   }
 
   // ---------- Imágenes con carga progresiva ----------
-  // Mismo orden de objetos que usa el generador de assets/images/heavy/*.svg
+  // Mismo orden de objetos que usa el generador de assets/images/heavy/*.jpg
   const OBJECT_LABELS = ['Perro', 'Gato', 'Celular', 'Laptop', 'Cámara', 'Auto', 'Taza', 'Bicicleta', 'Casa', 'Árbol', 'Reloj', 'Libro'];
 
   function buildImageTiles() {
@@ -148,7 +148,7 @@
       img.setAttribute('data-testid', 'heavy-image-' + n);
       img.setAttribute('data-object', objectLabel.toLowerCase());
       img.setAttribute('data-loaded', 'false');
-      img.dataset.src = '../assets/images/heavy/photo-' + String(n).padStart(2, '0') + '.svg?v=2';
+      img.dataset.src = '../assets/images/heavy/photo-' + String(n).padStart(2, '0') + '.jpg?v=3';
 
       img.addEventListener('load', () => {
         tile.classList.add('is-loaded');

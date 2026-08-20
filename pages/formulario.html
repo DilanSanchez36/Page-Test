@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Formulario complejo — Page Test</title>
-<link rel="stylesheet" href="../css/style.css?v=3" />
+<link rel="stylesheet" href="../css/style.css?v=4" />
 </head>
 <body>
 
@@ -174,7 +174,7 @@
     wrap.className = 'avatar-pick';
     wrap.setAttribute('data-testid', 'avatar-option-' + key);
     wrap.setAttribute('data-value', key);
-    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.svg?v=2" alt="' + label + '" />';
+    wrap.innerHTML = '<img src="../assets/images/avatar/avatar-' + n + '.jpg?v=3" alt="' + label + '" />';
     wrap.addEventListener('click', () => {
       avatarGrid.querySelectorAll('.avatar-pick').forEach(el => el.classList.remove('selected'));
       wrap.classList.add('selected');

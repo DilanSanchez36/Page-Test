@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Tabla dinámica — Page Test</title>
-<link rel="stylesheet" href="../css/style.css?v=3" />
+<link rel="stylesheet" href="../css/style.css?v=4" />
 </head>
 <body>
 
@@ -102,7 +102,7 @@
       const avatarIdx = row.id % 10;
       const avatarNum = String(avatarIdx + 1).padStart(2, '0');
       tr.innerHTML =
-        '<td><img class="avatar-thumb" src="../assets/images/avatar/avatar-' + avatarNum + '.svg?v=2" ' +
+        '<td><img class="avatar-thumb" src="../assets/images/avatar/avatar-' + avatarNum + '.jpg?v=3" ' +
           'alt="' + AVATAR_LABELS[avatarIdx] + '" data-testid="avatar-' + row.id + '" /></td>' +
         '<td data-testid="cell-id-' + row.id + '">' + row.id + '</td>' +
         '<td data-testid="cell-nombre-' + row.id + '">' + row.nombre + '</td>' +
