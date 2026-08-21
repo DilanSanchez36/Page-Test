@@ -149,6 +149,19 @@
     </div>
 
     <div class="panel">
+      <h2>Iframe anidado (difícil)</h2>
+      <p class="helper-text">
+        Este bloque tiene un iframe dentro de otro iframe (2 niveles). A propósito, <strong>ninguno de los
+        dos <code>&lt;iframe&gt;</code> ni el campo interno tiene <code>id</code> ni <code>data-testid</code></strong> —
+        solo el contenedor externo lo tiene, como punto de entrada. Hay que encadenar <code>frameLocator</code>
+        dos veces y ubicar el campo por rol, texto o <em>placeholder</em> en vez de por id. No es imposible, solo más largo.
+      </p>
+      <div class="iframe-box iframe-box--tall" data-testid="nested-iframe-outer">
+        <iframe src="iframe-anidado-nivel1.html" title="Iframe anidado nivel 1"></iframe>
+      </div>
+    </div>
+
+    <div class="panel">
       <button type="submit" class="btn" data-testid="form-submit">Enviar formulario</button>
       <span id="form-error" data-testid="form-error" style="display:none; color: var(--danger); margin-left: 12px;"></span>
     </div>

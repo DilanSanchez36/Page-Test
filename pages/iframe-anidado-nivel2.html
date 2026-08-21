@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nivel 2</title>
+<link rel="stylesheet" href="../css/style.css?v=6" />
+<style>
+  body { padding: 16px; background: var(--surface); }
+</style>
+</head>
+<body>
+
+<p style="color:var(--muted); font-size:0.8rem; margin:0 0 12px;">Nivel 2 de 2 — el campo real está aquí, sin id ni data-testid.</p>
+
+<label style="display:block; margin-bottom:10px;">
+  <span style="display:block; margin-bottom:6px; font-size:0.85rem; color:var(--muted);">Palabra clave</span>
+  <input type="text" placeholder="Escribe la palabra clave" />
+</label>
+
+<label style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:0.9rem;">
+  <input type="checkbox" />
+  Confirmo que encontré este campo dentro del iframe anidado
+</label>
+
+<button type="button" class="btn">Confirmar</button>
+
+<p style="margin-top:14px; color:var(--muted);" data-state="idle">Sin confirmar todavía.</p>
+
+<script>
+  const [textInput] = document.querySelectorAll('input[type="text"]');
+  const [checkbox] = document.querySelectorAll('input[type="checkbox"]');
+  const button = document.querySelector('button');
+  const result = document.querySelector('p[data-state]');
+
+  button.addEventListener('click', () => {
+    const value = textInput.value.trim();
+    if (!value || !checkbox.checked) {
+      result.textContent = 'Falta escribir la palabra clave y/o marcar la casilla.';
+      result.style.color = 'var(--danger)';
+      result.setAttribute('data-state', 'error');
+      return;
+    }
+    result.textContent = 'Confirmado dentro del iframe anidado: "' + value + '"';
+    result.style.color = 'var(--success)';
+    result.setAttribute('data-state', 'success');
+  });
+</script>
+
+</body>
+</html>

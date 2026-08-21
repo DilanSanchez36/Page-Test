@@ -364,6 +364,10 @@ fieldset legend {
   display: block;
 }
 
+.iframe-box--tall iframe {
+  height: 300px;
+}
+
 /* Status banners */
 .status {
   display: inline-flex;
